@@ -1,14 +1,18 @@
 import 'dart:io';
 
 import 'package:server/hangman.dart';
+import 'package:server/scoreboard.dart';
 
 class Server {
   final int port;
   int clientNum = 0;
+  Scoreboard scoreboard;
 
   Server(this.port);
 
   run() async {
+    scoreboard = Scoreboard("res/scoreboard.json");
+
     final srv = await ServerSocket.bind(InternetAddress.loopbackIPv4, port);
     print("Serving at ${srv.address}:${srv.port}");
     srv.listen(handleClient);
