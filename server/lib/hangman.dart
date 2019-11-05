@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 class Hangman {
   final String word;
   int remainingTries;
@@ -6,6 +9,17 @@ class Hangman {
 
   Hangman(this.word, [this.remainingTries = 11])
       : maskedWord = '_' * word.length;
+
+  static Future<Hangman> fromFile() async {
+    // src: https://stackoverflow.com/questions/21813401/reading-file-line-by-line-in-dart
+    final words = await File("res/words.txt")
+        .openRead()
+        .transform(utf8.decoder)
+        .transform(LineSplitter())
+        .toList();
+
+    return Hangman((words..shuffle()).first);
+  }
 
   guess(String _in) {
     if (_in.length == 1) {
@@ -16,11 +30,11 @@ class Hangman {
           foundChar = true;
         }
       }
-      if(!foundChar) {
+      if (!foundChar) {
         remainingTries--;
       }
     } else {
-      if(_in == word) {
+      if (_in == word) {
         maskedWord = word;
         _finished = true;
       } else {
@@ -34,7 +48,7 @@ class Hangman {
   }
 
   String endMessage() {
-    if(remainingTries < 1) {
+    if (remainingTries < 1) {
       return "You lose. The word was $word";
     } else {
       return "You win.";

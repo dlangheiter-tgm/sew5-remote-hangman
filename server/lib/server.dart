@@ -16,7 +16,7 @@ class Server {
 
   void handleClient(Socket client) async {
     print("New client accepted #${clientNum++}");
-    final hm = Hangman("testing");
+    final hm = await Hangman.fromFile();
     client.writeln(hm.toString());
     await for (var req in client) {
       String _in = String.fromCharCodes(req);
