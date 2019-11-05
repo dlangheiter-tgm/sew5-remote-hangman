@@ -4,12 +4,17 @@ import 'dart:io';
 
 import 'dart:math';
 
+import 'package:synchronized/synchronized.dart';
+
 class Scoreboard {
+  final lock;
   final File file;
   List<_ScoreboardEntry> entries;
 
-  Scoreboard(String path) : file = File(path) {
-    if(!file.existsSync()) {
+  Scoreboard(String path)
+      : file = File(path),
+        lock = Lock() {
+    if (!file.existsSync()) {
       file.createSync();
       entries = List();
       _save();
@@ -27,11 +32,14 @@ class Scoreboard {
     ));
     _save();
   }
-  
-  _save() {
+
+  _save() async {
     entries.sort((a, b) => b.tries.compareTo(a.tries));
     entries = entries.sublist(0, min(entries.length, 10));
-    file.writeAsStringSync(jsonEncode(entries.map((e) => e.toJson()).toList()));
+    await lock.synchronized(() async {
+      await file
+          .writeAsString(jsonEncode(entries.map((e) => e.toJson()).toList()));
+    });
   }
 }
 
@@ -74,6 +82,4 @@ class _ScoreboardEntry {
   String toString() {
     return '_ScoreboardEntry{tries: $tries, name: $name, word: $word}';
   }
-
-
 }

@@ -7,6 +7,9 @@ description: A sample command-line application.
 environment:
   sdk: '>=2.5.0 <3.0.0'
 
+dependencies:
+  synchronized: ^2.1.0+1
+
 #dependencies:
 #  path: ^1.6.0
 
