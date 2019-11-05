@@ -16,7 +16,7 @@ class Server {
 
   void handleClient(Socket client) async {
     final num = clientNum++;
-    print("New client accepted #$num}");
+    print("New client accepted #$num");
     Hangman hm;
 
     try {
