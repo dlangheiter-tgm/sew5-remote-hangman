@@ -22,10 +22,11 @@ class Hangman {
   }
 
   guess(String _in) {
+    _in = _in.toUpperCase();
     if (_in.length == 1) {
       bool foundChar = false;
       for (int i = 0; i < word.length; i++) {
-        if (word[i] == _in) {
+        if (word[i].toUpperCase() == _in) {
           maskedWord = _replaceCharAt(maskedWord, i, word[i]);
           foundChar = true;
         }
@@ -34,7 +35,7 @@ class Hangman {
         remainingTries--;
       }
     } else {
-      if (_in == word) {
+      if (_in == word.toUpperCase()) {
         maskedWord = word;
         _finished = true;
       } else {
