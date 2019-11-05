@@ -1,6 +1,6 @@
-
-
 import 'dart:io';
+
+import 'package:server/hangman.dart';
 
 class Server {
   final int port;
@@ -15,16 +15,22 @@ class Server {
   }
 
   void handleClient(Socket client) async {
-    print("New client accepted #$clientNum");
-    await for(var req in client) {
+    print("New client accepted #${clientNum++}");
+    final hm = Hangman("testing");
+    client.writeln(hm.toString());
+    await for (var req in client) {
       String _in = String.fromCharCodes(req);
-      if(_in.trim().isEmpty) {
+      if (_in.trim().isEmpty) {
         continue;
       }
-      print("Req: $_in");
-      client.write("Hi\n");
+      hm.guess(_in);
+      if(hm.isFinished()) {
+        client.writeln(hm.endMessage());
+        await client.close();
+        break;
+      }
+      client.writeln(hm.toString());
     }
     print("Client disconnected");
   }
-
 }
