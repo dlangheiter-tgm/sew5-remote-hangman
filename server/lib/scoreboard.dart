@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'dart:io';
 
+import 'dart:math';
+
 class Scoreboard {
   final File file;
   List<_ScoreboardEntry> entries;
@@ -14,11 +16,21 @@ class Scoreboard {
     } else {
       List<dynamic> rawJson = jsonDecode(file.readAsStringSync());
       entries = rawJson.map((json) => _ScoreboardEntry.fromJson(json)).toList();
-      print(entries);
     }
+  }
+
+  addEntry(int tries, String name, String word) {
+    entries.add(_ScoreboardEntry(
+      tries: tries,
+      name: name,
+      word: word,
+    ));
+    _save();
   }
   
   _save() {
+    entries.sort((a, b) => b.tries.compareTo(a.tries));
+    entries = entries.sublist(0, min(entries.length, 10));
     file.writeAsStringSync(jsonEncode(entries.map((e) => e.toJson()).toList()));
   }
 }
@@ -57,4 +69,11 @@ class _ScoreboardEntry {
       'word': word,
     };
   }
+
+  @override
+  String toString() {
+    return '_ScoreboardEntry{tries: $tries, name: $name, word: $word}';
+  }
+
+
 }

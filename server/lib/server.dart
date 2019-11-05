@@ -42,6 +42,8 @@ class Server {
       if (hm.isFinished()) {
         client.writeln(hm.endMessage());
         await client.close();
+        scoreboard.addEntry(
+            hm.remainingTries, client.remoteAddress.host, hm.word);
         break;
       }
       client.writeln(hm.toString());
