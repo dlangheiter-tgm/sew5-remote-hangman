@@ -15,8 +15,19 @@ class Server {
   }
 
   void handleClient(Socket client) async {
-    print("New client accepted #${clientNum++}");
-    final hm = await Hangman.fromFile();
+    final num = clientNum++;
+    print("New client accepted #$num}");
+    Hangman hm;
+
+    try {
+      hm = await Hangman.fromFile();
+    } catch (e) {
+      print("Exception: e");
+      client.writeln("Could not read file.");
+      await client.close();
+      return;
+    }
+
     client.writeln(hm.toString());
     await for (var req in client) {
       String _in = String.fromCharCodes(req);
@@ -24,13 +35,14 @@ class Server {
         continue;
       }
       hm.guess(_in);
-      if(hm.isFinished()) {
+      if (hm.isFinished()) {
         client.writeln(hm.endMessage());
         await client.close();
         break;
       }
       client.writeln(hm.toString());
     }
-    print("Client disconnected");
+
+    print("Client disconnected #$num");
   }
 }
