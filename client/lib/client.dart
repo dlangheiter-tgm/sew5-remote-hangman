@@ -1,3 +1,9 @@
-int calculate() {
-  return 6 * 7;
+class Client {
+  final String host;
+  final int port;
+
+  Client(this.host, this.port);
+
+
+
 }
