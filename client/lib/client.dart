@@ -16,18 +16,19 @@ class Client {
 
     Socket server = await Socket.connect(host, port);
 
-    input.listen((line) {
+    final in_sub = input.listen((line) {
       server.writeln(line.trim());
     });
 
-    server.listen(_handleServer);
-
-    print("end");
+    server.listen(_handleServer, onDone: () {
+      server.close();
+      in_sub.cancel();
+    });
   }
 
   void _handleServer(Uint8List data) {
     String _in = String.fromCharCodes(data);
-    if(_in.trim().isEmpty) {
+    if (_in.trim().isEmpty) {
       return;
     }
     print(_in.trim());
