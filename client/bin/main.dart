@@ -1,5 +1,6 @@
 import 'package:client/client.dart' as client;
 
+// Main method for Client
 main(List<String> arguments) async {
   if(arguments.length != 2) {
     print("Usage: client <host> <port>");
